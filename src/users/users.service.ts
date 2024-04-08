@@ -2,11 +2,12 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { User, UserDocument } from './entities/user.entity';
 import { ObjectId } from 'mongodb';
 import { UserRepository } from './user.repository';
-import { CreateUserDto } from './users.dto';
+import { CreateUserDto } from './dto/users.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User>{
@@ -48,4 +49,31 @@ export class UsersService extends TypeOrmCrudService<User>{
     user = this.userRepository.create(userDto);
     return await this.userRepository.save(user);
   }
+
+  async update(
+    id: ObjectId,
+    updateUserDto: UpdateUserDto,
+  ): Promise<any> {
+    let user = await this.userRepository.findOneBy({ userId : id });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+    // Update user properties based on DTO
+    if (updateUserDto.name) {
+      user.name = updateUserDto.name;
+    }
+    if (updateUserDto.email) {
+      user.email = updateUserDto.email;
+    }
+    if (updateUserDto.refreshToken) {
+      user.refreshToken = updateUserDto.refreshToken;
+    }
+    // Save changes
+    return await this.userRepository.save(user);
+  }
+
+  // async remove(id: string): Promise<UserDocument> {
+  //   return this.userRepository.findByIdAndDelete(id).exec();
+  // }
 }

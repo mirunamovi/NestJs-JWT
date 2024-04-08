@@ -11,4 +11,7 @@ export class CreateAuthDto {
   @IsNotEmpty()
   @MinLength(6) // Example: Minimum password length
   password: string;
+
+  @IsNotEmpty()
+  refreshToken: string;
 }

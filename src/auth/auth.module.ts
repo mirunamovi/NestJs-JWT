@@ -10,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { TokenBlacklistService } from './token-blacklist.service';
 import { LocalStrategy } from './strategy/local.strategy';
+import { AccessTokenStrategy } from './strategy/accessToken.strategy';
+import { RefreshTokenStrategy } from './strategy/refreshToken.strategy';
 @Module({
   imports: [
     UsersHttpModule,
@@ -31,7 +33,8 @@ import { LocalStrategy } from './strategy/local.strategy';
     AuthService,
     TokenBlacklistService,
     JwtStrategy, 
-    LocalStrategy
+    LocalStrategy,
+    AccessTokenStrategy, RefreshTokenStrategy
   ],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],

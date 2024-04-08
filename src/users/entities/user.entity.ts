@@ -3,6 +3,9 @@ import { Entity, ObjectIdColumn, Column, BeforeInsert } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ApiProperty } from '@nestjs/swagger';
 import * as bcrypt from 'bcryptjs';
+import { Document } from 'mongoose';
+
+export type UserDocument = User & Document;
 
 @Entity({ name: 'user' }) // Specify the collection name
 export class User {
@@ -30,4 +33,8 @@ export class User {
     const isPasswordValid = await bcrypt.compare(attempt, this.password);
     return isPasswordValid;
   }
+
+  @ApiProperty()
+  @Column()
+  refreshToken: string;
 }
