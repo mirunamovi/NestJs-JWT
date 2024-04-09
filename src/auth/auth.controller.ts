@@ -21,6 +21,7 @@ import { TokenBlacklistService } from './token-blacklist.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/users/dto/users.dto';
 import { AccessTokenGuard } from './strategy/accessToken.guard';
+import { RefreshTokenGuard } from './strategy/refreshToken.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -72,6 +73,14 @@ export class AuthController {
   @UseGuards(AccessTokenGuard)
   @Get('logout')
   logout(@Req() req) {
-    this.authService.logout(req.user);
+    this.authService.logout(req.user['sub']);
   }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  refreshTokens(@Req() req) {
+    const userId = req.user['sub'];
+    const refreshToken = req.user['refreshToken'];
+    return this.authService.refreshTokens(userId, refreshToken);
+}
 }

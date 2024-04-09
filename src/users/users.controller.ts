@@ -22,8 +22,8 @@ export class UsersController {
   
   @UseGuards(AccessTokenGuard)
   @Patch(':id')
-  update(@Param('id') id: ObjectId, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(email, updateUserDto);
   }
 
   // @UseGuards(AccessTokenGuard)

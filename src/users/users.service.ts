@@ -51,11 +51,11 @@ export class UsersService extends TypeOrmCrudService<User>{
   }
 
   async update(
-    id: ObjectId,
+    // id: ObjectId,
+    email: string,
     updateUserDto: UpdateUserDto,
   ): Promise<any> {
-    let user = await this.userRepository.findOneBy({ userId : id });
-
+    let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new Error('User not found');
     }

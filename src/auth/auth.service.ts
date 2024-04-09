@@ -27,13 +27,11 @@ export class AuthService {
     try {
       const newUser = await this.usersService.register(user);
       const tokens = await this.getTokens(newUser.id, newUser.name);
-      await this.updateRefreshToken(newUser.id, tokens.refreshToken);
-
+      // await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+      // return tokens;
     } catch (err) {
       status = { success: false, message: err.message };
     }
-
-    
     return status;
   }
 
@@ -47,27 +45,23 @@ export class AuthService {
     return null;
   }
 
-  // async login(user: any) {
-  //   const payload = { email: user.email, sub: user.id };
-  //   return {
-  //     access_token: this.jwtService.sign(payload),
-  //   };
-  // }
-
   async signIn(data: CreateAuthDto) {
     // Check if user exists
-    const user = await this.usersService.findOneByName(data.name);
-    if (!user) throw new BadRequestException('User does not exist');
-    const passwordMatches = await argon2.verify(user.password, data.password);
-    if (!passwordMatches)
-      throw new BadRequestException('Password is incorrect');
-    const tokens = await this.getTokens(user.userId, user.name);
-    await this.updateRefreshToken(user.userId, tokens.refreshToken);
+    const user = await this.usersService.findOneByEmail(data.email);
+    // if (!user) throw new BadRequestException('User does not exist');
+    // const passwordMatches = await argon2.verify(user.password, data.password);
+    // if (!passwordMatches)
+    //   throw new BadRequestException('Password is incorrect');
+    const tokensPromise  = await this.getTokens(user.userId, user.name);
+    const refreshTokenPromise = this.updateRefreshToken(user.email, tokensPromise.refreshToken);
+
+    const [tokens, _] = await Promise.all([tokensPromise, refreshTokenPromise]);
+
     return tokens;
   }
 
-  async logout(userId: ObjectId) {
-    return this.usersService.update(userId, { refreshToken: null });
+  async logout(email: string) {
+    return this.usersService.update(email, { refreshToken: null });
   }
 
   hashData(data: string) {
@@ -75,19 +69,20 @@ export class AuthService {
   }
 
 
-  async updateRefreshToken(userId: ObjectId, refreshToken: string) {
+  async updateRefreshToken(email: string, refreshToken: string) {
     const hashedRefreshToken = await this.hashData(refreshToken);
-    await this.usersService.update(userId, {
+    await this.usersService.update(email, {
       refreshToken: hashedRefreshToken,
     });
   }
 
-  async getTokens(userId: ObjectId, username: string) {
+  async getTokens(userId: ObjectId, name: string) {
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: userId,
-          username,
+          name,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
@@ -97,7 +92,7 @@ export class AuthService {
       this.jwtService.signAsync(
         {
           sub: userId,
-          username,
+          name,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
@@ -121,8 +116,8 @@ export class AuthService {
       refreshToken,
     );
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
-    const tokens = await this.getTokens(user.userId, user.name);
-    await this.updateRefreshToken(user.userId, tokens.refreshToken);
+    const tokens = await this.getTokens(user.userId, user.email);
+    await this.updateRefreshToken(user.email, tokens.refreshToken);
     return tokens;
   }
 }
