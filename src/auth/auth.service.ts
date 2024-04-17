@@ -28,12 +28,12 @@ export class AuthService {
       const newUser = await this.usersService.register(user);
       const tokens = await this.getTokens(newUser.id, newUser.name);
       // await this.updateRefreshToken(newUser.id, tokens.refreshToken);
-      // return tokens;
     } catch (err) {
       status = { success: false, message: err.message };
     }
     return status;
   }
+
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
@@ -45,19 +45,20 @@ export class AuthService {
     return null;
   }
 
+  // async signIn(data: CreateAuthDto) {
+  //   const user = await this.usersService.findOneByEmail(data.email);
+  //   const tokens = await this.getTokens(user.userId, user.name);
+  //   await this.updateRefreshToken(user.email, tokens.refreshToken);
+  //   return tokens;
+  // }
+
   async signIn(data: CreateAuthDto) {
-    // Check if user exists
     const user = await this.usersService.findOneByEmail(data.email);
-    // if (!user) throw new BadRequestException('User does not exist');
-    // const passwordMatches = await argon2.verify(user.password, data.password);
-    // if (!passwordMatches)
-    //   throw new BadRequestException('Password is incorrect');
-    const tokensPromise  = await this.getTokens(user.userId, user.name);
-    const refreshTokenPromise = this.updateRefreshToken(user.email, tokensPromise.refreshToken);
-
-    const [tokens, _] = await Promise.all([tokensPromise, refreshTokenPromise]);
-
-    return tokens;
+    const { accessToken, refreshToken } = await this.getTokens(user.userId, user.name);
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async logout(email: string) {

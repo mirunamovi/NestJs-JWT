@@ -52,7 +52,7 @@ export class AuthController {
   async test() {
     return 'test';
   }
-
+  
   @Post('signup')
   @UsePipes(new ValidationPipe())
   async signup(@Body() createUserDto: CreateUserDto) {
