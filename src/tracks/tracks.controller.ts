@@ -32,8 +32,9 @@ export class TracksController {
   @Post()
   @UseGuards(AuthGuard())
   async create(@Body() trackDto: CreateTrackDto, @Req() req): Promise<Track> {
-    const userId = req.user.userId; // Extract user ID from the token
-    const track: Track = this.tracksService.mapDtoToTrack(trackDto, userId);
+    const user = req.user; // Extract user ID from the token
+    console.log(req);
+    const track: Track = this.tracksService.mapDtoToTrack(trackDto, user);
     return this.tracksService.create(track);
   }
 

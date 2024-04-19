@@ -3,10 +3,6 @@ import { User } from 'src/users/entities/user.entity';
 
 export class CreateTrackDto {
   @IsNotEmpty()
-  @IsMongoId() 
-  readonly userId: string;
-
-  @IsNotEmpty()
   @IsString()
   readonly title: string;
 

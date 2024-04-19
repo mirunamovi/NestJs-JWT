@@ -31,10 +31,9 @@ async create(track: Track): Promise<Track> {
   return await this.trackRepository.save(createdTrack);
 }
 
-mapDtoToTrack(trackDto: CreateTrackDto, userId: ObjectId): Track {
-  const track = new Track();
-  track.title = trackDto.title;
-  track.userId = userId; 
+mapDtoToTrack(trackDto: CreateTrackDto, user: User): Track {
+  let track;
+  track = { ...trackDto, user: user }
   return track;
 }
 
