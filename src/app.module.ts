@@ -39,7 +39,10 @@ import * as cors from 'cors';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(cors({
-      origin: 'http://localhost:8100', // Allow requests from this origin
+      // origin: 'http://localhost:8100', // Allow requests from this origin
+      origin: 'http://localhost', // Allow requests from this origin
+      // origin: 'http://192.168.0.103', // Allow requests from this origin
+
       credentials: true, // Enable credentials (cookies, authorization headers, etc.)
     })).forRoutes('*');
   }

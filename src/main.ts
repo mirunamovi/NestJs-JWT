@@ -14,6 +14,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup(`/swagger`, app, document);
 
-  await app.listen(4000);
+  await app.listen(4000, '192.168.0.104');
+  // await app.listen(4000, 'localhost');
 }
 bootstrap();
