@@ -7,8 +7,8 @@ import { AuthGuard } from '@nestjs/passport';
 export class Track {
 
   @ApiProperty()
-  @ObjectIdColumn()
-  user: User
+  @Column()
+  user: User;
 
   @ObjectIdColumn() // Define the primary key as an ObjectId
   trackId: ObjectId;

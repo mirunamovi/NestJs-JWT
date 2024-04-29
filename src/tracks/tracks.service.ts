@@ -26,8 +26,13 @@ export class TracksService extends TypeOrmCrudService<Track>{
     return this.trackRepository.findOne({ where: { trackId } });
   }
 
+  async findByUserId(user: User): Promise<Track[]> {
+    return this.trackRepository.find({ where: { user: user } }); // Assuming your Track entity has a userId field
+  }
+
 async create(track: Track): Promise<Track> {
   const createdTrack = this.trackRepository.create(track);
+  console.log("Task created"+ createdTrack.user);
   return await this.trackRepository.save(createdTrack);
 }
 
