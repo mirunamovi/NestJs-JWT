@@ -9,7 +9,7 @@ export class Waypoint {
 
   @ApiProperty()
   @ObjectIdColumn({ name: "user", nullable: true })
-  userId: ObjectId | User;
+  userId: User;
 
   @ApiProperty()
   @ObjectIdColumn({ name: "track", nullable: true }) // Define the primary key as an ObjectId

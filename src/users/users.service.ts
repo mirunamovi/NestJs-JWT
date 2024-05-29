@@ -8,6 +8,7 @@ import { UserRepository } from './user.repository';
 import { CreateUserDto } from './dto/users.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { Console } from 'console';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User>{
@@ -23,8 +24,22 @@ export class UsersService extends TypeOrmCrudService<User>{
     return this.userRepository.find();
   }
 
-  public async findOneById(id: ObjectId): Promise<User | null> {
-    return this.userRepository.findOneBy({ userId : id });
+  async findById(userId: ObjectId): Promise<User | undefined> {
+    console.log("userId in findbyid: " + userId);
+    try {
+      // let user = await this.userRepository.findOneBy( {userId: userId });
+      let user = await this.userRepository.findOne({
+        where: { _id: new ObjectId(userId)}
+      });
+      if (!user) {
+        console.log("User not found in findById");
+      }
+      return user;
+
+    } catch (error) {
+      console.error("Error finding user:", error);
+      throw error; // Rethrow or handle as needed
+    }
   }
 
   async findOneByName(username: string): Promise<User | undefined> {

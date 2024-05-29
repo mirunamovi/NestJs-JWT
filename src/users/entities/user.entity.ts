@@ -10,7 +10,7 @@ export type UserDocument = User & Document;
 @Entity({ name: 'user' }) // Specify the collection name
 export class User {
   @ObjectIdColumn()
-  userId: ObjectId;
+  _id: ObjectId;
 
   @ApiProperty()
   @Column() 

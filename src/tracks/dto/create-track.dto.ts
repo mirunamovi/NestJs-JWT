@@ -4,7 +4,12 @@ import { User } from 'src/users/entities/user.entity';
 export class CreateTrackDto {
   @IsNotEmpty()
   @IsString()
-  readonly title: string;
+  title: string;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // readonly url: string;
+
 
   // @IsNotEmpty()
   // @IsDate()

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from '../typeorm.config';
 import { UsersHttpModule } from './users/users-http.module';
@@ -12,13 +12,28 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { WaypointsModule } from './waypoints/waypoints.module';
 import * as cors from 'cors';
-
+import { FilesController } from './files/files.controller';
+// import { FileUploadModule } from './file-upload/file-upload/file-upload.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
+    ServeStaticModule.forRootAsync({
+      useFactory: () => {
+        const uploadsPath = join(__dirname, 'public/uploads');
+        return [
+          {
+            rootPath: uploadsPath,
+            serveRoot: '/public/uploads/',
+          },
+        ];
+      },
+    }),
     UsersHttpModule,
     TracksHttpModule,
+    // FileUploadModule,
     AuthModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
@@ -35,15 +50,26 @@ import * as cors from 'cors';
     // UsersModule
     
   ],
+  controllers: [FilesController],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cors({
-      // origin: 'http://localhost:8100', // Allow requests from this origin
-      origin: 'http://localhost', // Allow requests from this origin
-      // origin: 'http://192.168.0.103', // Allow requests from this origin
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(cors({
+  //     origin: 'http://localhost:8100', // Allow requests from this origin
+  //     // origin: 'http://localhost', // Allow requests from this origin
+  //     // origin: 'http://192.168.0.103', // Allow requests from this origin
 
-      credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-    })).forRoutes('*');
+  //     credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+  //   })).forRoutes('*');
+  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(cors({
+        origin: '*', // Allow requests from this origin
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type, Authorization',
+        credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+      }))
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

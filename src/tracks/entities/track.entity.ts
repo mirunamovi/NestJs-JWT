@@ -11,7 +11,7 @@ export class Track {
   user: User;
 
   @ObjectIdColumn() // Define the primary key as an ObjectId
-  trackId: ObjectId;
+  _id: ObjectId;
 
   @ApiProperty()
   @Column()
@@ -20,5 +20,10 @@ export class Track {
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamp' }) // Automatically set the createdAt field
   createdAt: Date;
+
+  @ApiProperty()
+  @Column()
+  url: string;
+
 
 }

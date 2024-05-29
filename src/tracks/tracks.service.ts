@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectId } from 'typeorm';
+import { ObjectId } from 'mongodb';
 import { Track } from './entities/track.entity';
 import { TrackRepository } from './track.repository';
 import { User } from 'src/users/entities/user.entity';
@@ -23,7 +23,7 @@ export class TracksService extends TypeOrmCrudService<Track>{
   }
 
   async findById(trackId: ObjectId): Promise<Track | undefined> {
-    return this.trackRepository.findOne({ where: { trackId } });
+    return await this.trackRepository.findOne({ where: { _id: new ObjectId(trackId) } });
   }
 
   async findByUserId(user: User): Promise<Track[]> {
@@ -36,9 +36,20 @@ async create(track: Track): Promise<Track> {
   return await this.trackRepository.save(createdTrack);
 }
 
-mapDtoToTrack(trackDto: CreateTrackDto, user: User): Track {
+mapDtoToTrack(trackDto: CreateTrackDto, user: User, filePath: string): Track {
   let track;
-  track = { ...trackDto, user: user }
+  track = { ...trackDto, user: user, url: filePath }
+  return track;
+}
+
+// mapDtoToTrack2(trackDto: CreateTrackDto, user: User): Track {
+//   let track;
+//   track = { ...trackDto, user: user}
+//   return track;
+// }
+nameFromDto(trackDto: CreateTrackDto): string{
+  let track;
+  track = trackDto.title;
   return track;
 }
 
