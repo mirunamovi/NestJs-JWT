@@ -54,8 +54,10 @@ export class AuthService {
     };
   }
 
-  async logout(email: string) {
-    return this.usersService.update(email, { refreshToken: null });
+
+  async logout() {
+    console.log("am intrat in logout din authservice backend");
+    return {};
   }
 
   hashData(data: string) {
@@ -80,7 +82,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn: '15m',
+          expiresIn: '5s',
         },
       ),
       this.jwtService.signAsync(
@@ -90,14 +92,14 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: '7d',
+          expiresIn: '1m',
         },
       ),
     ]);
 
     return {
       accessToken,
-      refreshToken,
+      refreshToken
     };
   }
 

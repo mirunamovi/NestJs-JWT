@@ -70,10 +70,11 @@ export class AuthController {
     return this.authService.signIn(data);
   }
 
-  @UseGuards(AccessTokenGuard)
-  @Get('logout')
-  logout(@Req() req) {
-    this.authService.logout(req.user['sub']);
+  // @UseGuards(AccessTokenGuard)
+  @Post('logout')
+  logout() {
+    console.log("am intrat in logout din authcontroller backend");
+    this.authService.logout();
   }
 
   @UseGuards(RefreshTokenGuard)
