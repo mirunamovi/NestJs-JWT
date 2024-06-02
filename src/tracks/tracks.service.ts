@@ -36,9 +36,9 @@ async create(track: Track): Promise<Track> {
   return await this.trackRepository.save(createdTrack);
 }
 
-mapDtoToTrack(trackDto: CreateTrackDto, user: User, filePath: string): Track {
+mapDtoToTrack(trackDto: CreateTrackDto, user: User, fileName: string): Track {
   let track;
-  track = { ...trackDto, user: user, url: filePath }
+  track = { ...trackDto, user: user, fileName: fileName }
   return track;
 }
 

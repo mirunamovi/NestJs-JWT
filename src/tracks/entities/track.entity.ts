@@ -18,12 +18,13 @@ export class Track {
   title: string;
 
   @ApiProperty()
+  @Column()
+  fileName: string;
+
+  @ApiProperty()
   @CreateDateColumn({ type: 'timestamp' }) // Automatically set the createdAt field
   createdAt: Date;
 
-  @ApiProperty()
-  @Column()
-  url: string;
 
 
 }

@@ -20,16 +20,9 @@ import { join } from 'path';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
-    ServeStaticModule.forRootAsync({
-      useFactory: () => {
-        const uploadsPath = join(__dirname, 'public/uploads');
-        return [
-          {
-            rootPath: uploadsPath,
-            serveRoot: '/public/uploads/',
-          },
-        ];
-      },
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // Relative to compiled files in dist
+      serveRoot: '/uploads/',
     }),
     UsersHttpModule,
     TracksHttpModule,

@@ -5,10 +5,12 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "public/uploads/**/*",
+        "include": "uploads/**/*",
         "watchAssets": true ,
-        "outDir": "dist/public"
+        "outDir": "dist/"
       }
     ]
-  }
+  },
+  "watchAssets": true
+
 }
