@@ -11,6 +11,9 @@ import {
   Res,
   UseInterceptors,
   NotFoundException,
+  Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -24,6 +27,7 @@ import { diskStorage } from 'multer';
 import { Response } from 'express'; // Make sure to import from 'express'
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ObjectId } from 'typeorm';
+import * as fs from 'fs';
 
 @ApiTags('tracks')
 @Controller('tracks')
@@ -51,6 +55,12 @@ export class TracksController {
     return track;
   }
 
+  @Delete(':trackId')
+  @UseGuards(AuthGuard())
+  async deleteTrack(@Param('trackId') trackId: ObjectId): Promise<void> {
+    return await this.tracksService.delete(trackId);
+     
+  }
 
   @Post('upload')
   @UseGuards(AuthGuard())
@@ -84,6 +94,20 @@ export class TracksController {
         return this.tracksService.create(track);
 
 
+      }
+    }
+
+    @Delete('uploads/:fileName')
+    async deleteFile(@Param('fileName') fileName: string | undefined) {
+      console.log("am intrat in controller");
+      const filePath =`C:/Users/Miruna/Desktop/Backend/backend-gpx/uploads/${fileName}`; // Construct file path using string interpolation
+    
+      try {
+        await fs.promises.unlink(filePath); // Use promises to handle async operation
+        return { message: 'File deleted successfully' };
+      } catch (err) {
+        console.error(`Error deleting file: ${err.message}`);
+        throw new HttpException('File not found', HttpStatus.NOT_FOUND);
       }
     }
     
