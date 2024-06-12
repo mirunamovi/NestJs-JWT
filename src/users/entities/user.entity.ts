@@ -37,4 +37,10 @@ export class User {
   @ApiProperty()
   @Column()
   refreshToken: string;
+
+  @Column({ nullable: true })
+  resetToken?: string;
+
+  @Column({ nullable: true })
+  resetTokenExpiration: Date;
 }

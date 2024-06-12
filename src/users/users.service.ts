@@ -1,7 +1,7 @@
 // user.service.ts
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { User, UserDocument } from './entities/user.entity';
 import { ObjectId } from 'mongodb';
 import { UserRepository } from './user.repository';
@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/users.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { Console } from 'console';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService extends TypeOrmCrudService<User>{
@@ -88,7 +89,43 @@ export class UsersService extends TypeOrmCrudService<User>{
     return await this.userRepository.save(user);
   }
 
-  // async remove(id: string): Promise<UserDocument> {
-  //   return this.userRepository.findByIdAndDelete(id).exec();
-  // }
+  async findByResetToken(token: string): Promise<User> {
+    return this.userRepository.findOne({ where: { resetToken: token } });
+  }
+
+  async setResetToken(email: string): Promise<string> {
+    const user = await this.findOneByEmail(email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiration = new Date();
+    expiration.setHours(expiration.getHours() + 1); // Token valid for 1 hour
+
+    user.resetToken = token;
+    user.resetTokenExpiration = expiration;
+
+    await this.userRepository.save(user);
+
+    return token;
+  }
+
+  async validateResetToken(token: string): Promise<User | undefined> {
+    const user = await this.userRepository.findOne({
+      where: {
+        resetToken: token,
+        resetTokenExpiration: MoreThan(new Date()),
+      },
+    });
+
+    return user;
+  }
+
+  async updatePassword(user: User, newPassword: string): Promise<void> {
+    user.password = newPassword; // hash password appropriately
+    user.resetToken = null;
+    user.resetTokenExpiration = null;
+    await this.userRepository.save(user);
+  }
 }

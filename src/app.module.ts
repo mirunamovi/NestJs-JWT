@@ -16,6 +16,9 @@ import { FilesController } from './files/files.controller';
 // import { FileUploadModule } from './file-upload/file-upload/file-upload.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+
 
 @Module({
   imports: [
@@ -26,35 +29,33 @@ import { join } from 'path';
     }),
     UsersHttpModule,
     TracksHttpModule,
-    // FileUploadModule,
     AuthModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
     },
-    // CorsModule.forRoot({
-    //   origin: 'http://localhost:8100', // Allow requests from this origin
-    //   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-    // }),
   ),
     MongooseModule.forRoot(process.env.DB_URI),
     WaypointsModule,
-    // TracksModule,
-    // UsersModule
+    ForgotPasswordModule,    
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.MAIL_HOST,
+        port: parseInt(process.env.MAIL_PORT, 10),
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      },
+      defaults: {
+        from: '"No Reply" <no-reply@example.com>',
+      },
+    }),
     
   ],
   controllers: [FilesController],
 })
 export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(cors({
-  //     origin: 'http://localhost:8100', // Allow requests from this origin
-  //     // origin: 'http://localhost', // Allow requests from this origin
-  //     // origin: 'http://192.168.0.103', // Allow requests from this origin
-
-  //     credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-  //   })).forRoutes('*');
-  // }
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(cors({

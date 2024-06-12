@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
@@ -9,6 +9,9 @@ import { CreateUserDto } from 'src/users/dto/users.dto';
 import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { ObjectId } from 'typeorm';
+import { MailerService } from '@nestjs-modules/mailer';
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable()
 export class AuthService {
@@ -16,6 +19,8 @@ export class AuthService {
     private usersService: UsersService, 
     private jwtService: JwtService,
     private configService: ConfigService,
+    private readonly mailerService: MailerService
+
   ) {}
 
   async signUp(user: CreateUserDto) {
@@ -116,4 +121,5 @@ export class AuthService {
     await this.updateRefreshToken(user.email, tokens.refreshToken);
     return tokens;
   }
+
 }
