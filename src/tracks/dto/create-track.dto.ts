@@ -1,14 +1,21 @@
 import { IsString, IsNotEmpty, IsDate, IsMongoId, IsEmpty } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
+import { ObjectId } from 'typeorm';
 
 export class CreateTrackDto {
+
+  id: ObjectId;
+
   @IsNotEmpty()
   @IsString()
   title: string;
 
-  // @IsNotEmpty()
-  // @IsString()
-  // readonly url: string;
+  @IsString()
+  thumbnail: string;
+
+  @IsNotEmpty()
+  @IsString()
+  fileName: string;
 
 
   // @IsNotEmpty()

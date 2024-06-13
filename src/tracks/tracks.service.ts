@@ -28,6 +28,12 @@ export class TracksService extends TypeOrmCrudService<Track> {
     });
   }
 
+  async findByTitleAndFileName(title: string, fileName: string): Promise<Track | undefined> {
+    return await this.trackRepository.findOne({
+      where: { title: title, fileName:fileName },
+    });
+  }
+
   async findByUserId(user: User): Promise<Track[]> {
     return this.trackRepository.find({ where: { user: user } }); // Assuming your Track entity has a userId field
   }
@@ -44,6 +50,10 @@ export class TracksService extends TypeOrmCrudService<Track> {
     return await this.trackRepository.save(createdTrack);
   }
 
+  async updateThumbnail(track: Track): Promise<Track> {
+    return await this.trackRepository.save(track);
+  }
+
   mapDtoToTrack(trackDto: CreateTrackDto, user: User, fileName: string): Track {
     let track;
     track = { ...trackDto, user: user, fileName: fileName };
@@ -55,4 +65,5 @@ export class TracksService extends TypeOrmCrudService<Track> {
     track = trackDto.title;
     return track;
   }
+
 }

@@ -22,6 +22,10 @@ export class Track {
   fileName: string;
 
   @ApiProperty()
+  @Column()
+  thumbnail?: string;
+
+  @ApiProperty()
   @CreateDateColumn({ type: 'timestamp' }) // Automatically set the createdAt field
   createdAt: Date;
 
