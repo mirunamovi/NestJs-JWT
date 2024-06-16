@@ -23,6 +23,7 @@ import { CreateUserDto } from 'src/users/dto/users.dto';
 import { AccessTokenGuard } from './strategy/accessToken.guard';
 import { RefreshTokenGuard } from './strategy/refreshToken.guard';
 import { ForgotPasswordDto } from '../forgot-password/dto/forgot-password.dto';
+import { ResetPasswordDto } from 'src/forgot-password/dto/reset-password.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -85,6 +86,7 @@ export class AuthController {
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
   }
+
 
 
 

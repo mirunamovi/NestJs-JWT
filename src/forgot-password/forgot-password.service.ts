@@ -29,11 +29,13 @@ export class ForgotPasswordService {
     });
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<void> {
-    const user = await this.usersService.validateResetToken(token);
-    if (!user) {
-      throw new Error('Invalid or expired password reset token');
-    }
+  async resetPassword(email: string, newPassword: string): Promise<void> {
+    console.log("email in resetpassword fp " +     email);
+
+    const user = await this.usersService.findOneByEmail(email);
+    console.log("user in resetpassword fp " + user);
+    console.log("newPassword in resetpassword fp " + newPassword);
+
 
     await this.usersService.updatePassword(user, newPassword);
   }

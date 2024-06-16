@@ -26,6 +26,8 @@ import { diskStorage } from 'multer';
 import { Response } from 'express'; // Make sure to import from 'express'
 import { ObjectId } from 'typeorm';
 import * as fs from 'fs';
+import { userInfo } from 'os';
+import { User } from 'src/users/entities/user.entity';
 
 @ApiTags('tracks')
 @Controller('tracks')
@@ -138,7 +140,7 @@ export class TracksController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './uploads',
-        filename: (req, file, cb) => {
+        filename: (req: any, file, cb) => {
           const name = file.originalname;
           const newFileName = name.split(' ').join('_');
           cb(null, newFileName);

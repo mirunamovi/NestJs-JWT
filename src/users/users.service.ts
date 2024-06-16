@@ -25,6 +25,15 @@ export class UsersService extends TypeOrmCrudService<User>{
     return this.userRepository.find();
   }
 
+  async findOneByName(username: string): Promise<User | undefined> {
+    return this.userRepository.findOneBy({name: username});
+  }
+
+  async findOneByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.findOneBy({email: email});
+  }
+
+
   async findById(userId: ObjectId): Promise<User | undefined> {
     console.log("userId in findbyid: " + userId);
     try {
@@ -43,13 +52,7 @@ export class UsersService extends TypeOrmCrudService<User>{
     }
   }
 
-  async findOneByName(username: string): Promise<User | undefined> {
-    return this.userRepository.findOneBy({name: username});
-  }
 
-  async findOneByEmail(email: string): Promise<User | undefined> {
-    return this.userRepository.findOneBy({email: email});
-  }
 
   public async register(userDto: CreateUserDto): Promise<any> {
     const { email } = userDto;
@@ -123,9 +126,16 @@ export class UsersService extends TypeOrmCrudService<User>{
   }
 
   async updatePassword(user: User, newPassword: string): Promise<void> {
-    user.password = newPassword; // hash password appropriately
-    user.resetToken = null;
-    user.resetTokenExpiration = null;
-    await this.userRepository.save(user);
+    if(newPassword != null){
+      console.log(user);
+      console.log(newPassword);
+      user.password = newPassword; // hash password appropriately
+    // user.resetToken = null;
+    // user.resetTokenExpiration = null;
+    const userss = this.userRepository.create(user);
+
+    await this.userRepository.save(userss);
+    }
+    
   }
 }

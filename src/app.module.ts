@@ -5,7 +5,6 @@ import { UsersHttpModule } from './users/users-http.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TracksHttpModule } from './tracks/tracks-http.module';
-import { WaypointsModule } from './waypoints/waypoints.module';
 import * as cors from 'cors';
 import { FilesController } from './files/files.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -29,8 +28,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
       isGlobal: true,
     },
   ),
-    // MongooseModule.forRoot(process.env.DB_URI),
-    WaypointsModule,
     ForgotPasswordModule,    
     MailerModule.forRoot({
       transport: {
