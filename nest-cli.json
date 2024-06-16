@@ -4,7 +4,8 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "assets": [
-        "forgot-password/templates/**/*"
+        "forgot-password/templates/**/*",
+        "/uploads"
     ]
   },
   "watchAssets": true

@@ -4,16 +4,10 @@ import { typeOrmConfig } from '../typeorm.config';
 import { UsersHttpModule } from './users/users-http.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TracksModule } from './tracks/tracks.module';
-import { UsersModule } from './users/users.module';
 import { TracksHttpModule } from './tracks/tracks-http.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth/auth.guard';
 import { WaypointsModule } from './waypoints/waypoints.module';
 import * as cors from 'cors';
 import { FilesController } from './files/files.controller';
-// import { FileUploadModule } from './file-upload/file-upload/file-upload.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
@@ -25,7 +19,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     TypeOrmModule.forRoot(typeOrmConfig),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'), // Relative to compiled files in dist
-      serveRoot: '/uploads/',
+      serveRoot: '/uploads',
     }),
     UsersHttpModule,
     TracksHttpModule,
@@ -35,7 +29,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       isGlobal: true,
     },
   ),
-    MongooseModule.forRoot(process.env.DB_URI),
+    // MongooseModule.forRoot(process.env.DB_URI),
     WaypointsModule,
     ForgotPasswordModule,    
     MailerModule.forRoot({

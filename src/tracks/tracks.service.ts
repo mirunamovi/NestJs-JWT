@@ -54,9 +54,9 @@ export class TracksService extends TypeOrmCrudService<Track> {
     return await this.trackRepository.save(track);
   }
 
-  mapDtoToTrack(trackDto: CreateTrackDto, user: User, fileName: string): Track {
+  mapDtoToTrack(trackDto: CreateTrackDto, user: User, fileName: string, thumbnail: string): Track {
     let track;
-    track = { ...trackDto, user: user, fileName: fileName };
+    track = { ...trackDto, user: user, fileName: fileName, thumbnail: thumbnail};
     return track;
   }
 
