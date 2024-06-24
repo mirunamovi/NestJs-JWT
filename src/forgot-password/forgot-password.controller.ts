@@ -8,7 +8,7 @@ import * as bcrypt from 'bcryptjs';
 export class ForgotPasswordController {
   constructor(private readonly forgotPasswordService: ForgotPasswordService) {}
 
-  @Post()
+  @Post('send-mail')
   async sendResetLink(@Body() forgotPasswordDto: ForgotPasswordDto) {
     await this.forgotPasswordService.sendPasswordResetEmail(forgotPasswordDto.email);
     return { message: 'Password reset link sent' };
@@ -16,11 +16,23 @@ export class ForgotPasswordController {
 
   @Post('reset-password')
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    let password =  resetPasswordDto.password;
-    password= await bcrypt.hash(resetPasswordDto.password, 10);
-    console.log("resetPasswordDto.password: " + resetPasswordDto.password);
+    // let password =  resetPasswordDto.password;
+    // password= await bcrypt.hash(resetPasswordDto.password, 10);
+    console.log("resetPassword.password: " + resetPasswordDto.password);
 
     await this.forgotPasswordService.resetPassword(resetPasswordDto.email, resetPasswordDto.password);
     return { message: 'Password reset successful' };
   }
+  
+  @Post('submit-code')
+  async submitCode(@Body() resetPasswordDto: ResetPasswordDto) {
+    console.log("submitCode.email: " + resetPasswordDto.email);
+    console.log("submitCode.password: " + resetPasswordDto.password);   
+    await this.forgotPasswordService.resetPasswordCode(resetPasswordDto.email, resetPasswordDto.password);
+    return { message: 'Code sent' };
+  }
+
+
+
+
 }

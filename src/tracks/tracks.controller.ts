@@ -28,6 +28,8 @@ import { ObjectId } from 'typeorm';
 import * as fs from 'fs';
 import { userInfo } from 'os';
 import { User } from 'src/users/entities/user.entity';
+import { UUID } from 'typeorm/driver/mongodb/bson.typings';
+import { v4 as uuidv4 } from 'uuid';
 
 @ApiTags('tracks')
 @Controller('tracks')
@@ -92,7 +94,8 @@ export class TracksController {
         destination: './uploads',
         filename: (req, file, cb) => {
           const name = file.originalname;
-          const newFileName = name.split(' ').join('_');
+          const uniqueSuffix = uuidv4();
+          const newFileName = name.split(' ').join('_') + '_' + uniqueSuffix;
           cb(null, newFileName);
         },
       }),
@@ -116,8 +119,7 @@ export class TracksController {
 
       } else {
         const title = this.tracksService.nameFromDto(trackDto);
-        let  fileName = title.split(' ').join('_');
-        fileName = `${fileName}.gpx`;
+        let  fileName = this.tracksService.fileNameFromDto(trackDto);
         const thumbnail = " ";
 
         const user = req.user.sub;
@@ -159,7 +161,8 @@ export class TracksController {
       throw new BadRequestException();
     } else {
         const title = this.tracksService.nameFromDto(trackDto);
-        let  fileName = file.originalname.split(' ').join('_');
+        let  fileName = this.tracksService.fileNameFromDto(trackDto);
+
         const thumbnail = " ";
 
         const user = req.user.sub;

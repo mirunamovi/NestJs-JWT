@@ -66,4 +66,11 @@ export class TracksService extends TypeOrmCrudService<Track> {
     return track;
   }
 
+  fileNameFromDto(trackDto: CreateTrackDto): string {
+    let track;
+    track = trackDto.fileName;
+    return track;
+  }
+
+
 }

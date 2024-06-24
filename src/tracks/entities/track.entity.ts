@@ -28,7 +28,4 @@ export class Track {
   @ApiProperty()
   @CreateDateColumn({ type: 'timestamp' }) // Automatically set the createdAt field
   createdAt: Date;
-
-
-
 }
